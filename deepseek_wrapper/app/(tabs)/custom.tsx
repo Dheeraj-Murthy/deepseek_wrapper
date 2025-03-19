@@ -2,14 +2,18 @@ import { StyleSheet } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
+import ChatBox from '@/components/ChatBox';
 
-export default function TabOneScreen() {
+export default function TabTwoScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <Text style={styles.title}> Hello world </Text>
+      <Text style={styles.title}>Custom Tab</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+      {/* aEditScreenInfo path="app/(tabs)/two.tsx" /> */}
+      <ChatBox
+        isUser={true}
+        text={'Hello User, this is the AI. This message was create in collaboration with Badri and friends!<br />You can ask me any question and I will try my best to give you a satisfactory answer.'}
+      />
     </View>
   );
 }
