@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     maxWidth: '70%', // Adjusts size relative to screen width
     alignSelf: 'flex-end', // Aligns the bubble to the right
     marginRight: '5%',
+    marginVertical: 20,
   },
   containerLeft: {
     backgroundColor: 'grey', // Blue color for chat bubble
@@ -38,6 +39,7 @@ const styles = StyleSheet.create({
     maxWidth: '70%', // Adjusts size relative to screen width
     alignSelf: 'flex-start', // Aligns the bubble to the right
     marginLeft: '5%',
+    marginVertical: 20,
   },
   text: {
     color: 'white',

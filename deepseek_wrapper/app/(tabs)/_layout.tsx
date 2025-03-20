@@ -1,6 +1,7 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
+import { Link } from 'expo-router';
+import { Drawer } from 'expo-router/drawer'
 import { Pressable, StyleSheet } from 'react-native';
 
 import Colors from '@/constants/Colors';
@@ -20,18 +21,18 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <Tabs
+    <Drawer
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        drawerActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
       }}>
-      <Tabs.Screen
+      <Drawer.Screen
         name="index"
         options={{
           title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          drawerIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
@@ -48,11 +49,11 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
+      <Drawer.Screen
         name="two"
         options={{
           title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          drawerIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerRight: () => (
             <View style={styles.container}>
               <Text style={styles.text}> Hello world </Text>
@@ -60,14 +61,14 @@ export default function TabLayout() {
           )
         }}
       />
-      <Tabs.Screen
+      <Drawer.Screen
         name="custom"
         options={{
           title: "custom",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          drawerIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
-    </Tabs>
+    </Drawer>
   );
 }
 
