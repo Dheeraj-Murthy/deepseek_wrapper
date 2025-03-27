@@ -5,10 +5,9 @@ const { spawn } = require("child_process");
 
 const app = express();
 const port = 3000;
-let modelOutput = "";
 
-app.use(cors()); // Allow React Native to access this API
-app.use(express.json()); // Allow JSON input from requests
+app.use(cors());
+app.use(express.json());
 
 // Start Ollama Serve in a new terminal
 app.get("/start-ollama", (req, res) => {
@@ -28,41 +27,52 @@ app.get("/start-ollama", (req, res) => {
   });
 });
 
-async function send_request(content) {
+// Streaming function
+async function send_request_stream(content, res) {
   try {
-    const response = await axios.post(
-      "http://localhost:11434/api/chat",
-      {
+    const response = await axios({
+      method: "post",
+      url: "http://localhost:11434/api/chat",
+      data: {
         model: "deepseek-r1:1.5b",
         messages: [{ role: "user", content: content }],
-        stream: true,
+        stream: true, // Enable streaming
       },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        httpsAgent: new (require("https").Agent)({
-          rejectUnauthorized: false,
-        }),
-      }
-    );
+      responseType: "stream", // Set response type to stream
+      headers: { "Content-Type": "application/json" },
+    });
 
-    console.log("Response: ", response.data);
-    return response;
+    res.setHeader("Content-Type", "text/plain");
+
+    response.data.on("data", (chunk) => {
+      try {
+        const data = JSON.parse(chunk.toString());
+        if (data.message && data.message.content) {
+          res.write(data.message.content); // Send data chunk to client
+        }
+      } catch (err) {
+        console.error("Error parsing chunk:", err);
+      }
+    });
+
+    response.data.on("end", () => {
+      res.end(); // Close connection when streaming is complete
+    });
+
+    response.data.on("error", (err) => {
+      console.error("Stream error:", err);
+      res.status(500).send("Streaming failed.");
+    });
   } catch (error) {
-    console.error("Error:", error.response?.data || error.message);
+    console.error("Request error:", error);
+    res.status(500).send("Error occurred while sending request.");
   }
 }
 
+// Handle user query with streaming response
 app.post("/ask-query", async (req, res) => {
-  data = req.body;
-  response = await send_request(data.question);
-  res.send({ message: response.message.content });
-});
-
-// Fetch model output
-app.get("/get-output", (req, res) => {
-  res.send({ output: modelOutput });
+  const { question } = req.body;
+  send_request_stream(question, res);
 });
 
 app.listen(port, () => {
