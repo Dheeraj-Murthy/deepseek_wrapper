@@ -28,9 +28,11 @@ export default function TabLayout() {
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
       }}>
+      {/*
       <Drawer.Screen
         name="index"
         options={{
+
           title: 'Tab One',
           drawerIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerRight: () => (
@@ -49,6 +51,7 @@ export default function TabLayout() {
           ),
         }}
       />
+
       <Drawer.Screen
         name="two"
         options={{
@@ -61,11 +64,41 @@ export default function TabLayout() {
           )
         }}
       />
+*/}
+
+      <Drawer.Screen
+        name="index"
+        options={{
+
+          title: 'Tab One',
+          drawerIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerRight: () => (
+            <Link href="/modal" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <FontAwesome
+                    name="info-circle"
+                    size={25}
+                    color={Colors[colorScheme ?? 'light'].text}
+                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                  />
+                )}
+              </Pressable>
+            </Link>
+          ),
+        }}
+      />
+
       <Drawer.Screen
         name="custom"
         options={{
           title: "custom",
           drawerIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerRight: () => (
+            <View style={styles.container}>
+              <Text style={styles.text}> custom </Text>
+            </View>
+          )
         }}
       />
     </Drawer>
@@ -75,7 +108,7 @@ export default function TabLayout() {
 const styles = StyleSheet.create({
   container: {
     //flex: 1,
-    backgroundColor: 'blue',
+    //backgroundColor: '',
   },
   text: {
     fontSize: 20,

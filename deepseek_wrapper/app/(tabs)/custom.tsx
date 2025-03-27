@@ -25,13 +25,59 @@ export default function ChatView() {
     }
   }, []);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (query.trim()) {
       setMessages([...messages, { isUser: true, text: query }]);
+      await askQuery();
       setQuery('');
       console.log(messages);
     }
   }
+
+
+  const askQuery = async () => {
+    setMessages((prevMessages) => [...prevMessages, { isUser: false, text: "" }]);
+
+    const responseStream = await fetch("http://localhost:3000/ask-query", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: query }),
+    });
+
+    if (!responseStream?.body) {
+      console.log("response Stream is null");
+      return;
+    }
+
+    const reader = responseStream.body.getReader();
+    const decoder = new TextDecoder();
+
+    setMessages((prevMessages) => {
+      const updatedMessages = [...prevMessages];
+      const lastMessageIndex = updatedMessages.length - 1;
+
+      const processChunk = async () => {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+
+          setMessages((prev) => {
+            const newMessages = [...prev];
+            newMessages[lastMessageIndex] = {
+              ...newMessages[lastMessageIndex],
+              text: newMessages[lastMessageIndex].text + chunk,
+            };
+            return newMessages;
+          });
+        }
+      };
+
+      processChunk();
+      return updatedMessages;
+    });
+  };
 
 
 
