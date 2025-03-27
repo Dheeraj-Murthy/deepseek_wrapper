@@ -1,5 +1,5 @@
 import { Button, Dimensions, ScrollView, StyleSheet, TextInput } from 'react-native';
-import { Text, View } from '@/components/Themed';
+import { View } from '@/components/Themed';
 import ChatBox from '@/components/ChatBox';
 import { useEffect, useRef, useState } from 'react';
 
